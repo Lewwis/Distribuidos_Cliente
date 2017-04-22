@@ -5,6 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Panel;
 import javax.swing.SwingConstants;
+import javax.swing.text.DefaultCaret;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -94,6 +95,9 @@ public class ClientWindow {
 		chatTextArea = new JTextArea();
 		chatTextArea.setEditable(false);
 		scrollPane.setViewportView(chatTextArea);
+		chatTextArea.setLineWrap(true);
+		DefaultCaret caret = (DefaultCaret) chatTextArea.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
 
 }
