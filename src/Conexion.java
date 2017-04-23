@@ -2,7 +2,6 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
@@ -12,9 +11,6 @@ import java.net.Socket;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 // Listener para el boton que enviara los datos del cliente al servidor
 public class Conexion implements ActionListener {
@@ -103,8 +99,10 @@ public class Conexion implements ActionListener {
 		} catch (Exception e) {
 			System.out.println("Problemas con el JSON");
 		}*/
+		
+		String jsonRaw = JsonManager.prepareJson(0,user,null,txt);
 				
-		return txt;
+		return jsonRaw;
 	}
 	
 	// Aun sin implementar en la interfaz grafica
