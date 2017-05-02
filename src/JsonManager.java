@@ -3,10 +3,6 @@ import org.json.simple.parser.JSONParser;
 
 public class JsonManager {
 	
-	private static String getString(JSONObject _jobj) {
-		return _jobj.toString();
-	}
-	
 	private static JSONObject setJson(String _txtJson) {
 		try {
 			JSONParser parser = new JSONParser();
@@ -18,7 +14,8 @@ public class JsonManager {
 		return null;
 	}
 	
-	public static String prepareJson(int _type, String _user,String[] _destino, String _txt) {
+	@SuppressWarnings("unchecked")
+	public static String codeJson(int _type, String _user,String _destino, String _txt) {
 		JSONObject jobj = new JSONObject();
 		
 		jobj.put("Tipo", _type);
@@ -29,8 +26,13 @@ public class JsonManager {
 		return jobj.toJSONString();
 	}
 	
-	public static int decodeJson() {
+	public static int getType(String _txtJson) {
+		JSONObject jobj = setJson(_txtJson);
+		System.out.println("-------------------Tipo : " + (String) jobj.get("Tipo"));
+		//return (int) jobj.get("Tipo");
 		return 0;
 	}
+	
+	
 	
 }

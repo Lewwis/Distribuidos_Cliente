@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -27,6 +28,7 @@ public class Conexion implements ActionListener {
 	
 	private JTextField textField;
 	private String user;
+	private ArrayList<String> mensajes =new ArrayList<String>();
 	
 	// Constructor para TCP
 	public Conexion(Socket _socket, JTextField _textField, String _user) {
@@ -36,6 +38,9 @@ public class Conexion implements ActionListener {
 		this.isUDP = false;
 		try {
 			outputStream = new PrintWriter(socket.getOutputStream(), true);
+						
+
+			
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Problema al momento de crear salida de datos");
 			System.out.println(e);
@@ -59,12 +64,14 @@ public class Conexion implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		try {
 			if(isUDP) {
 				String mensaje = prepareMessege();
-				DatagramPacket dPacketP = new DatagramPacket(mensaje.getBytes(), mensaje.getBytes().length, hostIP, port);
-				dsocket.send(dPacketP);
+				/*DatagramPacket dPacketP = new DatagramPacket(mensaje.getBytes(), mensaje.getBytes().length, hostIP, port);
+				dsocket.send(dPacketP); */
+				mensajes.add(mensaje);
+				System.out.println("Mensaje enviado");
 			} else {
 				outputStream.println(prepareMessege());
 			}
@@ -86,28 +93,61 @@ public class Conexion implements ActionListener {
 							+ Integer.toString(minute) + " : " 
 							+ Integer.toString(second) + "]" + "\t";
 		
-		String txt = date + user + " : "+ textField.getText() + "\0";
+		String destino = "";
+		String txt = "";
+		int type = 0;
 		
-		// Pruebas con JSON --------------------
 		
-		/*JSONParser parser = new JSONParser();
-		try {
-			Object obj = parser.parse(new FileReader("C:/Users/LuisR/workspace/client/JSON.txt"));
-			JSONObject jsonObj = (JSONObject) obj;
-			//txt = jsonObj.toJSONString();
-			//txt = (String ) jsonObj.get("Name");
-		} catch (Exception e) {
-			System.out.println("Problemas con el JSON");
-		}*/
-		
-		String jsonRaw = JsonManager.prepareJson(0,user,null,txt);
+		if(textField.getText().substring(0,1).matches("/")) {
+			String arr[] = textField.getText().split(" ",2);
+			destino = arr[0].substring(1, arr[0].length());
+			
+			try {
+				txt = date + user + " : "+ arr[1] + "\0";
+			}catch (Exception e) {
+				txt = date + user + " te envio un toque \0";
+			}
+			
+			type = 2;
+		}
+		else if (textField.getText().substring(0,2).matches(new String(".C"))) {
+			type = 3;
+		}
+		else if (textField.getText().substring(0,2).matches(new String(".E"))) {
+			type = 4;
+		}
+		else {
+			type = 0;
+			destino = null;
+			txt = date + user + " : "+ textField.getText() + "\0";
+		}		
 				
-		return jsonRaw;
+		return JsonManager.codeJson(type,user,destino,txt);
 	}
 	
 	// Aun sin implementar en la interfaz grafica
 	public void setUser(String _user) {
 		this.user = _user;
+	}	
+	
+	public void sendLastMessege() {
+		if(mensajes.size() != 0) {
+			try {
+				String mensaje = mensajes.get(mensajes.size() - 1);
+				DatagramPacket dPacketP = new DatagramPacket(mensaje.getBytes(), mensaje.getBytes().length, hostIP, port);
+				dsocket.send(dPacketP);
+				System.out.println("Ultimo mensaje es : " + mensajes.get(mensajes.size() - 1));
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+
+		} 
+		else {
+			System.out.println("No hay mensajes");
+		}
 	}
 	
+	public void popMessege() {
+		mensajes.remove(mensajes.size()-1);
+	}
 }
