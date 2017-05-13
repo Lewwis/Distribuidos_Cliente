@@ -3,6 +3,7 @@ import org.json.simple.parser.JSONParser;
 
 public class JsonManager {
 	
+	// Convierte la entrada a un objeto tipo JSON
 	private static JSONObject setJson(String _txtJson) {
 		try {
 			JSONParser parser = new JSONParser();
@@ -14,6 +15,7 @@ public class JsonManager {
 		return null;
 	}
 	
+	// Devuelve un String en el formato del JSON al recibir los datos requeridos
 	@SuppressWarnings("unchecked")
 	public static String codeJson(int _type, String _user,String _destino, String _txt) {
 		JSONObject jobj = new JSONObject();
@@ -26,13 +28,12 @@ public class JsonManager {
 		return jobj.toJSONString();
 	}
 	
+	// Devuelve el tipo de dato del JSON
 	public static int getType(String _txtJson) {
 		JSONObject jobj = setJson(_txtJson);
 		System.out.println("-------------------Tipo : " + (String) jobj.get("Tipo"));
 		//return (int) jobj.get("Tipo");
 		return 0;
 	}
-	
-	
 	
 }

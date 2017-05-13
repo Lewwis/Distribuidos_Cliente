@@ -12,10 +12,13 @@ Estructura del JSON
 
 Tipo: tipo de mensaje que se esta enviando. Puede ser
 			0- Broadcast
-			1- Confirmacion de recibido
+			1- Acknowledge
 			2- Mensaje directo a usuarios especificados 
 			3- Solicitar usuarios conectados al servidor
-			4- Solicitud de salida del servidor
+			4- Bloquear mensajes con usuario
+			5- Desbloquear mensajes con usuario
+			6- Funciones de red social
+			7- Salir o entrar al servidor
 			
 Origen: nombre del usuario que envia el json
 

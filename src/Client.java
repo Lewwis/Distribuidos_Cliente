@@ -11,29 +11,26 @@ import javax.swing.JOptionPane;
 
 public class Client {
 
-	// Sockets
 	private Socket socket;
 	private DatagramSocket dsocket;
-	
 	private BufferedReader input;
 	private static ClientWindow window;
 	private boolean isUDP;
-	
 	private static Conexion conexion;
 	
-	// Para TCP
+	// Constructor para TCP
 	public Client(Socket _socket) {
 		this.isUDP = false;
 		this.socket = _socket;
 	}
 	
-	// Para UDP
+	// Constructor para UDP
 	public Client(DatagramSocket _dsocket) {
 		this.isUDP = true;
 		this.dsocket = _dsocket;
 	}
 	
-	// Espera un mensaje del servidor
+	// Espera un mensaje del servidor y envia mensajes de la pila de mensajes
 	public void listenServer() {
 		String messege = "";
 		DatagramPacket dPacketR;
@@ -58,11 +55,10 @@ public class Client {
 						dPacketR = new DatagramPacket(bufer, bufer.length);
 						dsocket.receive(dPacketR);
 						messege = new String(dPacketR.getData(), "UTF-8");
-						
 					} else {
 						messege = input.readLine();
 					}
-					
+					// Verifica si se tienen que enviar mensajes de la pila
 					if(messege != null && messege.substring(0,2).matches(new String("/1")))
 						conexion.popMessege();	
 					else if(messege != null) {
@@ -75,6 +71,7 @@ public class Client {
 		}
 	}
 	
+	// Clase principal
     public static void main(String[] args) throws IOException {
     	
     	String username = JOptionPane.showInputDialog("Inserte nombre de usuario");
@@ -107,7 +104,6 @@ public class Client {
 					conexion.sendLastMessege();
 				}
 			}, 0, 1, TimeUnit.SECONDS);
-			
 			
 			client.listenServer();
 			
