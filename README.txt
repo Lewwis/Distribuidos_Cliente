@@ -3,11 +3,9 @@ Estructura del JSON
 {
   "Tipo": 0,
   "Origen": "Usuario1",
-  "Destino": [
-    "Usuario2",
-    "Usuario5"
-  ],
-  "Datos": "Mensaje"
+  "Destino": "Usuario2",
+  "Datos": "Mensaje",
+  "Extra": "Extras"
 }
 
 Tipo: tipo de mensaje que se esta enviando. Puede ser
@@ -18,7 +16,10 @@ Tipo: tipo de mensaje que se esta enviando. Puede ser
 			4- Bloquear mensajes con usuario
 			5- Desbloquear mensajes con usuario
 			6- Funciones de red social
-			7- Salir o entrar al servidor
+			7- Para mostrar el clima
+			8- Salir o entrar al servidor
+			9- Enviar archivo
+			10-Recibir archivo
 			
 Origen: nombre del usuario que envia el json
 

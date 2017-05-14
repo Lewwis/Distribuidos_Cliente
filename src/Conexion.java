@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 // Listener para el boton que enviara los datos del cliente al servidor
@@ -26,13 +27,15 @@ public class Conexion implements ActionListener {
 	private boolean isUDP;
 	
 	private JTextField textField;
+	private JTextArea chatArea;
 	private String user;
 	private ArrayList<String> mensajes =new ArrayList<String>();
 	
 	// Constructor para TCP
-	public Conexion(Socket _socket, JTextField _textField, String _user) {
+	public Conexion(Socket _socket, JTextField _textField,JTextArea _chatArea, String _user) {
 		this.socket = _socket;
 		this.textField = _textField;
+		this.chatArea = _chatArea;
 		this.user = _user;
 		this.isUDP = false;
 		try {
@@ -44,10 +47,11 @@ public class Conexion implements ActionListener {
 	}
 	
 	// Constructor para UDP
-	public Conexion (DatagramSocket _dsocket, String _hostIP, int _port, JTextField _textField, String _user) {
+	public Conexion (DatagramSocket _dsocket, String _hostIP, int _port, JTextField _textField, JTextArea _chatArea, String _user) {
 		this.dsocket = _dsocket;
 		this.port = _port;
 		this.textField = _textField;
+		this.chatArea = _chatArea;
 		this.user = _user;
 		this.isUDP = true;
 		try {
@@ -64,19 +68,22 @@ public class Conexion implements ActionListener {
 		try {
 			int type = lookType(textField.getText());
 			if(isUDP) {
-				if(type != 6) {
-					String mensaje = prepareMessege(type);
-					mensajes.add(mensaje);
-					System.out.println("Mensaje enviado");
-				} else {
+				if(type == 6) {
 					String mensaje = textField.getText().substring(3);
 					System.out.println("Se mandaria esto:" + mensaje);
 					TwitterConexion.tweet(mensaje);
+				} else if(type == 7) {
+					System.out.println("Entrando a funciones de clima");
+					String clima = Clima.getClima();
+					chatArea.setText(chatArea.getText() + "\nEstado del clima: " + clima);
+				} else {
+					String mensaje = prepareMessege(type);
+					mensajes.add(mensaje);
+					System.out.println("Mensaje enviado:" + prepareMessege(type));
 				}
 			} else {
 				outputStream.println(prepareMessege(type));
 			}
-			System.out.println("Mensaje enviado:" + prepareMessege(type));
 			textField.setText("");
 		} catch (Exception e2) {
 			JOptionPane.showMessageDialog(null,"Fallo al momento de enviar el mensaje al servidor");
@@ -87,9 +94,12 @@ public class Conexion implements ActionListener {
 	// Prepara el mensaje con cierto formato para ser enviado y lo codifia a JSON
 	public String prepareMessege(int _typeMensaje) {
 		
+		int type = _typeMensaje;
+		String origen = user;
 		String destino = null;
 		String txt = null;
-		int type = _typeMensaje;
+		
+		String aux[];
 		
 		switch (_typeMensaje) {
 		case 0:	// Broadcast
@@ -97,12 +107,19 @@ public class Conexion implements ActionListener {
 			txt = user + " : "+ textField.getText() + "\0";
 			break;
 		case 2:	// Mensaje directo
-			String aux[] = textField.getText().split(" ");
+			aux = textField.getText().split(" ");
 			destino = aux[1];
 			txt = user + " : "+ textField.getText().substring(aux[1].length() + 4) + "\0";
 			break;
 		case 3:
+		case 8:
 			txt = textField.getText() + "\0";
+			break;
+		case 9:	// Envio de un archivo
+			aux = textField.getText().split(" ");
+			origen = aux[2];
+			destino = aux[1];
+			txt = FileManager.fileToSend(origen);
 			break;
 		
 		default:
@@ -110,7 +127,7 @@ public class Conexion implements ActionListener {
 			break;
 		}	
 				
-		return JsonManager.codeJson(type,user,destino,txt);
+		return JsonManager.codeJson(type,origen,destino,txt);
 	}
 	
 	// Envia el ultimo mensaje almacenado en cola
@@ -148,6 +165,9 @@ public class Conexion implements ActionListener {
 		case "/b": return 4;	// Bloquear usuario
 		case "/d": return 5;	// Desbloquar usuario
 		case "/t": return 6;	// Funciones de red social
+		case "/w": return 7;	// Mostrar el clima
+		case "/e": return 8;	// Salirse por comando
+		case "/f": return 9;	// Enviar archivo
 
 		default: return 0;		// Broadcast
 		}

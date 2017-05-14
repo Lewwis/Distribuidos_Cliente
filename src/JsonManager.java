@@ -36,4 +36,10 @@ public class JsonManager {
 		return 0;
 	}
 	
+	// Devuelve el valor de la llave
+	public static String getByKey(String _key, String _txtJson) {
+		JSONObject jobj = setJson(_txtJson);
+		return (String) jobj.get(_key);
+	}
+	
 }

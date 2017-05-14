@@ -90,7 +90,7 @@ public class Client {
 			window.ipField.setText(hostIP);
 			
 			// Conexin para ara UDP
-			conexion = new Conexion(dsocket, hostIP, 9734, window.textField, window.nameField.getText());
+			conexion = new Conexion(dsocket, hostIP, 9734, window.textField, window.chatTextArea, window.nameField.getText());
 			
 			window.frame.setVisible(true);
 			window.btnSendTxt.addActionListener(conexion);
