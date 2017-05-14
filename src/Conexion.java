@@ -167,7 +167,7 @@ public class Conexion implements ActionListener {
 		case "/t": return 6;	// Funciones de red social
 		case "/w": return 7;	// Mostrar el clima
 		case "/e": return 8;	// Salirse por comando
-		case "/f": return 9;	// Enviar archivo
+		case "/f": return 9;	// Enviar archivo o recibir
 
 		default: return 0;		// Broadcast
 		}

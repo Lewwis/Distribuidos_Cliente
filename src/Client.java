@@ -9,6 +9,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 public class Client {
 
 	private Socket socket;
@@ -58,10 +61,13 @@ public class Client {
 					} else {
 						messege = input.readLine();
 					}
-					// Verifica si se tienen que enviar mensajes de la pila
-					if(messege != null && messege.substring(0,2).matches(new String("/1")))
+					// Verifica si se tienen que enviar mensajes de la pila y acknowledge
+					if(messege != null && JsonManager.getType(messege) == 1) {
 						conexion.popMessege();	
-					else if(messege != null) {
+					} else if(messege != null && JsonManager.getType(messege) == 9) {
+						JSONObject jobj = (JSONObject) new JSONParser().parse(messege);
+						FileManager.fileToRecive((String) jobj.get("Origen"), (String) jobj.get("Datos"));
+					} else if(messege != null) {
 						window.chatTextArea.setText(window.chatTextArea.getText() + "\n" + messege);
 				}
 			} catch (Exception e) {

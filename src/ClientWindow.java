@@ -27,7 +27,6 @@ public class ClientWindow {
 	public JTextPane ipText;
 	public JButton btnSendTxt;
 	public Panel textPanel;
-	private JButton btnNewButton_1;
 	
 	/**
 	 * Create the application.
@@ -73,9 +72,6 @@ public class ClientWindow {
 		ipPanel.add(ipText, BorderLayout.WEST);
 		ipText.setText("IP Server: ");
 		ipText.setEditable(false);
-		
-		btnNewButton_1 = new JButton("New button");
-		ipPanel.add(btnNewButton_1, BorderLayout.EAST);
 		
 		panel = new JPanel();
 		settingsPanel.add(panel, BorderLayout.NORTH);

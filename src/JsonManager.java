@@ -31,9 +31,7 @@ public class JsonManager {
 	// Devuelve el tipo de dato del JSON
 	public static int getType(String _txtJson) {
 		JSONObject jobj = setJson(_txtJson);
-		System.out.println("-------------------Tipo : " + (String) jobj.get("Tipo"));
-		//return (int) jobj.get("Tipo");
-		return 0;
+		return (int) jobj.get("Tipo");
 	}
 	
 	// Devuelve el valor de la llave
